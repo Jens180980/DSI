@@ -20,6 +20,16 @@ class SongController {
 		const result = await model.create(req, res);
 		res.json(result);
 	}
+
+	update = async (req, res) => {
+		const result = await model.update(req, res);
+		res.json(result);
+	}
+
+	delete = async (req, res) => {
+		const result = await model.delete(req, res);
+		res.json(result);
+	}
 }
 
 export default SongController;

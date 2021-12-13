@@ -7,7 +7,7 @@ class SongModel {
 
 	list = (req, res) => {
 		return new Promise((resolve, reject) => {
-			const orderKey = req.query.orderBy || 's.id';
+			const orderBy = req.query.orderBy || 's.id';
 			const limit = req.query.limit ? `LIMIT ${req.query.limit}` : '';
 			let sql = `SELECT s.id, s.title, a.name AS artist 
 						FROM song s 
@@ -42,17 +42,54 @@ class SongModel {
 	}
 
 	create = async (req, res) => {
+		return new Promise ((resolve, reject) => {
+
 		const arrFormValues = (Object.values(req.body));
 		const sql = `INSERT INTO song(title, content, artist_id) 
 						VALUES(?,?,?)`;
 		db.query(sql, arrFormValues, (err, result) => {
 			if(err) {
-				return err
+				reject(err)
 			} else {
-				return result;
+				resolve({ status: 'ok', id: result.insertId })
 			}
 		})
+	})
 	}
+
+	update = async (req, res) => {
+		return new Promise ((resolve, reject) => {
+
+		const arrFormValues = (Object.values(req.body));
+		const sql = `UPDATE song
+						SET title = ?, content = ?, artist_id = ?
+						WHERE id = ?`
+		db.query(sql, arrFormValues, (err, result) => {
+			if(err) {
+				reject(err)
+			} else {
+				resolve({ status: 'ok', id: req.body.id })
+			}
+		})
+	})
+	}
+
+	delete = async (req, res) => {
+		return new Promise ((resolve, reject) => {
+
+		const arrFormValues = (Object.values(req.body));
+		const sql = `DELETE song
+						WHERE id = ?`
+		db.query(sql, arrFormValues, (err, result) => {
+			if(err) {
+				reject(err)
+			} else {
+				resolve({ status: 'ok', id: req.body.id })
+			}
+		})
+	})
+	}
+
 }
 
 export default SongModel;
